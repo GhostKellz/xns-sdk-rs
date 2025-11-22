@@ -98,16 +98,29 @@ impl MetadataParser {
     /// Extract domain name from metadata
     pub fn extract_domain_name(metadata: &NftMetadata) -> Option<String> {
         // Try name field first
-        if metadata.name.ends_with(".xrp") {
-            return Some(metadata.name.clone());
+        // XNS format: "ckelley.xrp, an XRPNS name" or just "ckelley.xrp"
+        if metadata.name.contains(".xrp") {
+            // Extract domain before comma or use entire name
+            let domain = metadata.name
+                .split(',')
+                .next()
+                .unwrap_or(&metadata.name)
+                .trim();
+
+            if domain.ends_with(".xrp") {
+                return Some(domain.to_string());
+            }
         }
 
-        // Check attributes
+        // Check attributes for domain field
         for attr in &metadata.attributes {
-            if attr.trait_type == "domain" || attr.trait_type == "name" {
+            if attr.trait_type == "domain" || attr.trait_type == "name" || attr.trait_type == "Domain" {
                 if let Some(domain) = attr.value.as_str() {
-                    if domain.ends_with(".xrp") {
-                        return Some(domain.to_string());
+                    if domain.contains(".xrp") {
+                        let domain = domain.split(',').next().unwrap_or(domain).trim();
+                        if domain.ends_with(".xrp") {
+                            return Some(domain.to_string());
+                        }
                     }
                 }
             }
@@ -116,8 +129,11 @@ impl MetadataParser {
         // Check extra fields
         if let Some(domain) = metadata.extra.get("domain") {
             if let Some(domain_str) = domain.as_str() {
-                if domain_str.ends_with(".xrp") {
-                    return Some(domain_str.to_string());
+                if domain_str.contains(".xrp") {
+                    let domain = domain_str.split(',').next().unwrap_or(domain_str).trim();
+                    if domain.ends_with(".xrp") {
+                        return Some(domain.to_string());
+                    }
                 }
             }
         }

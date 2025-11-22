@@ -25,9 +25,11 @@ pub mod error;
 pub mod models;
 pub mod parser;
 pub mod resolver;
+pub mod memo_storage;
 
 // Re-exports
 pub use client::{XrplClient, XrplNetwork};
 pub use error::{XnsError, XnsResult};
 pub use models::{DomainInfo, NamingService, NftMetadata};
 pub use resolver::XnsResolver;
+pub use memo_storage::{MemoStorage, AddressStorageTransaction};

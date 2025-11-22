@@ -33,10 +33,18 @@ impl NamingService {
     /// Get the known issuer address for this naming service
     pub fn issuer_address(&self, network: XrplNetwork) -> Option<&'static str> {
         match (self, network) {
-            // TODO: Replace with actual XNS issuer addresses
-            (NamingService::XNS, XrplNetwork::Mainnet) => Some("rXNSIssuerMainnet"),
-            (NamingService::XNS, XrplNetwork::Testnet) => Some("rXNSIssuerTestnet"),
-            (NamingService::XRPDomains, XrplNetwork::Mainnet) => Some("rXRPDomainsMainnet"),
+            // XNS (xrpns.com) - Verified from ckelley.xrp NFT
+            (NamingService::XNS, XrplNetwork::Mainnet) => {
+                Some("rYhfynZDrde1uSvvQAYctApg6DnVE5HKm")
+            }
+            (NamingService::XNS, XrplNetwork::Testnet) => {
+                // TODO: Find testnet issuer address
+                None
+            }
+            // XRP Domains (xrpdomains.xyz) - From xrp.cafe research
+            (NamingService::XRPDomains, XrplNetwork::Mainnet) => {
+                Some("r4pM3nT7r7X1k2WMcSw5Sz8ftUu33TEfA4")
+            }
             _ => None,
         }
     }
@@ -133,4 +141,18 @@ pub struct AccountNftsResult {
 
     #[serde(rename = "marker")]
     pub marker: Option<String>,
+}
+
+/// nft_info result (from Clio)
+#[derive(Debug, Clone, Deserialize)]
+pub struct NftInfo {
+    pub nft_id: String,
+    pub owner: String,
+    pub is_burned: bool,
+
+    #[serde(default)]
+    pub uri: Option<String>,
+
+    #[serde(default)]
+    pub issuer: Option<String>,
 }

@@ -25,6 +25,9 @@ pub enum XnsError {
     #[error("Unsupported naming service: {0}")]
     UnsupportedService(String),
 
+    #[error("Invalid input: {0}")]
+    InvalidInput(String),
+
     #[error("Internal error: {0}")]
     InternalError(String),
 }
